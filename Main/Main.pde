@@ -13,7 +13,20 @@ void draw () {
     i = i + 1;
   }
   if (i > 9) {
-    println("hoi");
+    //println("hoi");
     i = 0;
   }
+ fill(255,0,0);
+ ellipse(100,100,100,100); 
+ fill(0,255,0);
+ ellipse(200,100,100,100);
+}
+
+void mousePressed(){
+ if (mouseX >= 50 && mouseX <= 150 && mouseY >= 50 && mouseY <= 150){
+   println("goed verhaal Emma");
+ }
+ if (mouseX >= 150 && mouseX <= 250 && mouseY >= 50 && mouseY <= 150){
+   println("goed verhaal Marit");
+ }
 }
