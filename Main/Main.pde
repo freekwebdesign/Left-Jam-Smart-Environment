@@ -1,32 +1,38 @@
-/* Left Jam */
-/* Main-file */
-/* Version 1.0 */
+PImage snow;
 
-int i = 0;
+Small[] flakes1 = new Small[65];
+Big[] flakes2 = new Big[30];
+  int maxSnowSmall = 65;
+  int maxSnowBig = 30;
 
-void setup () {
-  size(500,500);
-}
 
-void draw () {
-  if (i < 10) {
-    i = i + 1;
+void setup() {
+  size(450, 360);
+  snow = loadImage("snow.jpg");
+
+  for(int s = 0; s < maxSnowSmall; s++){
+    flakes1[s] = new Small();
   }
-  if (i > 9) {
-    //println("hoi");
-    i = 0;
-  }
- fill(255,0,0);
- ellipse(100,100,100,100); 
- fill(0,255,0);
- ellipse(200,100,100,100);
+  for(int t = 0; t < maxSnowBig; t++){
+    flakes2[t] = new Big();
+   }
 }
 
-void mousePressed(){
- if (mouseX >= 50 && mouseX <= 150 && mouseY >= 50 && mouseY <= 150){
-   println("goed verhaal Emma");
- }
- if (mouseX >= 150 && mouseX <= 250 && mouseY >= 50 && mouseY <= 150){
-   println("goed verhaal Marit");
- }
+void draw() {
+  imageMode(CORNERS);
+  image(snow, 0, 0);
+  
+  imageMode(CENTER);
+
+  for(int s = 0; s < maxSnowSmall; s++) {
+    flakes1[s].drawMe();
+    flakes1[s].moveMe();
+  }
+  for(int t = 0; t < maxSnowBig; t++) {
+    flakes2[t].drawMe();
+    flakes2[t].moveMe();
+  } 
 }
+
+
+
