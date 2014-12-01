@@ -1,32 +1,42 @@
-/* Left Jam */
-/* Main-file */
-/* Version 1.0 */
+/* LEFT JAM */
+/* Mood Station TM */
 
-int i = 0;
+/* First setup files */
+import processing.serial.*;
+Serial port;
 
-void setup () {
-  size(500,500);
+/* Tijmen */
+
+/* Luuk */
+
+/* Freek */
+
+/* Jop */
+
+
+void setup(){
+  /* First setup files */
+  println("Available serial ports:");
+  println(Serial.list());
+  port = new Serial(this, Serial.list()[0], 9600);  // Open the port that the Arduino board is connected to, at 9600 baud
+  
+  /* Tijmen */
+
+  /* Luuk */
+
+  /* Freek */
+
+  /* Jop */
 }
 
-void draw () {
-  if (i < 10) {
-    i = i + 1;
-  }
-  if (i > 9) {
-    //println("hoi");
-    i = 0;
-  }
- fill(255,0,0);
- ellipse(100,100,100,100); 
- fill(0,255,0);
- ellipse(200,100,100,100);
+void draw(){
+  /* Tijmen */
+
+  /* Luuk */
+
+  /* Freek */
+
+  /* Jop */
 }
 
-void mousePressed(){
- if (mouseX >= 50 && mouseX <= 150 && mouseY >= 50 && mouseY <= 150){
-   println("goed verhaal Emma");
- }
- if (mouseX >= 150 && mouseX <= 250 && mouseY >= 50 && mouseY <= 150){
-   println("goed verhaal Marit");
- }
-}
+
