@@ -49,6 +49,7 @@ void draw(){
     int num;
     num = parseInt(colors[n]); // change string into Int
     port.write((byte)(num)); // write as a byte over serial
+  }
 
 /* Jop */
 
