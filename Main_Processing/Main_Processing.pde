@@ -10,6 +10,7 @@ Serial port;
 /* Luuk */
 
 /* Freek */
+int temp;
 
 /* Jop */
 
@@ -17,7 +18,7 @@ void setup(){
 /* Initial setup files */
   println("Available serial ports:");
   println(Serial.list());
-  port = new Serial(this, Serial.list()[0], 9600);  // Open the port that the Arduino board is connected to, at 9600 baud
+  port = new Serial(this, Serial.list()[0], 9600);  // Disable this line if you don't have a Adruino connected!  Open the port that the Arduino board is connected to, at 9600 baud
   size(1080,720);
   
 /* Tijmen */
@@ -50,25 +51,39 @@ void draw(){
 /* Luuk */
 
 /* Freek */
-  /* Control LEDs */
-  String[] colors = new String[3];
-  colors = loadStrings("http://boelders.nl/control-led/LED.txt"); // Insert the location of your .txt file
-  /* text file contains 3 lines of numbers for RGB values, eg:
-  255
-  125
-  0
-  */
+  /* Control LEDs in combination with temp */
+  int[] colors = new int[3];
+  
+  if (temp < 5) {
+  colors[0] = 255; //red
+  colors[1] = 0;
+  colors[2] = 0;
+  }
+  
+  if (temp >= 5 && temp <= 15) {
+  colors[0] = 255; //red
+  colors[1] = 0;
+  colors[2] = ((temp-5)*25);
+  }
+  
+  if (temp >= 15 && temp <= 25) {
+  colors[0] = 255 - ((temp-15)*25);
+  colors[1] = 0;
+  colors[2] = 255; //blue
+  }
+  
+  if (temp > 25) {
+  colors[0] = 0;
+  colors[1] = 0;
+  colors[2] = 255; //blue
+  } 
   
   for(int n=0;n<3;n++){ 
     //println(colors[n]);
     int num;
-    num = parseInt(colors[n]); // change string into Int
+    num = colors[n]; // change string into Int
     port.write((byte)(num)); // write as a byte over serial
   }
-  
-  /* Weather information */
-  XML xml;
-  String url = "http://xml.buienradar.nl/";
 
 /* Jop */
 
