@@ -5,16 +5,20 @@
 PImage webImg;
 int temp;
 float regen;
+String musicurl;
 
-import ddf.minim.*;
-Minim minim;
-AudioPlayer player;
+//import ddf.minim.*;
+//Minim minim;
+//AudioPlayer player;
+
+import android.media.*;
+import android.content.res.*;
+MediaPlayer snd;
 
 void setup(){
 /* Freek */
 
   size(600,600);
-  
   
   /* Weather information */
   XML xml;
@@ -44,7 +48,7 @@ void setup(){
    XML[] icoonchildren = xml.getChildren("weergegevens/actueel_weer/weerstations/weerstation/icoonactueel");
     String icoon = icoonchildren[i].getContent();
     println(icoon);
-    //webImg = loadImage(icoon, "gif");
+    webImg = loadImage(icoon);
     
     
     XML[] regenchildren = xml.getChildren("weergegevens/actueel_weer/weerstations/weerstation/regenMMPU");
@@ -69,18 +73,24 @@ void setup(){
   colors[0] = 255; //red
   colors[1] = 0;
   colors[2] = 0;
+  
+  musicurl = "http://boelders.nl/uni/mp3/Rain.mp3";
   }
   
   if (temp >= 5 && temp <= 15) {
   colors[0] = 255; //red
   colors[1] = 0;
   colors[2] = ((temp-5)*25);
+  
+  musicurl = "http://boelders.nl/uni/mp3/Clouds.mp3";
   }
   
   if (temp >= 15 && temp <= 25) {
   colors[0] = 255 - ((temp-15)*25);
   colors[1] = 0;
   colors[2] = 255; //blue
+  
+  musicurl = "http://boelders.nl/uni/mp3/Sun.mp3";
   }
   
   if (temp > 25) {
@@ -96,16 +106,16 @@ void setup(){
   image(webImg, 10, 5, 40, 40);
   
   //ZON: a,b,f,g,h,i,k,o,u
-  minim = new Minim(this);
+  //minim = new Minim(this);
   
   if (regen == 0) {
-  player = minim.loadFile("Sun.mp3", 2048);
-  player.play(); 
+  //player = minim.loadFile("Sun.mp3", 2048);
+  //player.play(); 
   }
   
   if (regen > 0) {
-  player = minim.loadFile("Rain.mp3", 2048);
-  player.play();
+  //player = minim.loadFile("Rain.mp3", 2048);
+  //player.play();
   }
     
   
@@ -113,6 +123,16 @@ void setup(){
   String weer_info = tekstChild.getContent("");
   text(weer_info,10,60,400,400);
   
+  println(musicurl);
+  
+  try {
+  MediaPlayer snd = new MediaPlayer();
+  snd.setDataSource(musicurl);
+  snd.prepare();
+  snd.start();
+  } catch (IOException e) {
+          e.printStackTrace();
+  }
 }
 
 void draw(){

@@ -1,96 +1,80 @@
 /* LEFT JAM
-   Mood Station TM */
+   Mood Station TM
+   Notes: Use the firmate sketch on the Arduino!
+*/
 
 /* Initial setup files */
 import processing.serial.*;
-Serial port;
+import cc.arduino.*;
 
-/* Tijmen */
+Arduino arduino;
 
-/* Luuk */
-
-/* Freek */
+/* Weather information  */
 int temp;
 
-/* Jop */
+/* LED strip */
+int red, green, blue;
+int RedPin = 7; //Red pin 9 has a PWM
+int GreenPin = 8; //Green pin 10 has a PWM
+int BluePin = 9; //Blue pin 11 has a PWM
 
 void setup(){
 /* Initial setup files */
-  println("Available serial ports:");
-  println(Serial.list());
-  port = new Serial(this, Serial.list()[0], 9600);  // Disable this line if you don't have a Adruino connected!  Open the port that the Arduino board is connected to, at 9600 baud
+  arduino = new Arduino(this, Arduino.list()[0], 57600);
+  frameRate(20);  // delay of 50 ms, 20Hz update
   size(1080,720);
-  
-/* Tijmen */
 
-/* Luuk */
-
-/* Freek */
   /* Weather information */
   XML xml;
-  String url = "http://xml.buienradar.nl/";
-
+   String url = "http://xml.buienradar.nl/";
+  
   xml = loadXML(url);
   XML firstChild = xml.getChild("weergegevens/actueel_weer/weerstations/weerstation/temperatuurGC");
   //println(firstChild.getIntContent());
-  
+    
   int temp = firstChild.getIntContent();
   text(temp + " graden",10,20);
-  
+    
   XML tekstChild = xml.getChild("weergegevens/verwachting_vandaag/tekst");
   String weer_info = tekstChild.getContent("");
   text(weer_info,10,40,1070,100);
-  
-/* Jop */
 
 }
 
 void draw(){
-/* Tijmen */
-
-/* Luuk */
-
-/* Freek */
   /* Control LEDs in combination with temp */
   int[] colors = new int[3];
-  
+    
   if (temp < 5) {
-  colors[0] = 255; //red
-  colors[1] = 0;
-  colors[2] = 0;
+    colors[0] = 255; //red
+    colors[1] = 0;
+    colors[2] = 0;
   }
-  
+    
   if (temp >= 5 && temp <= 15) {
-  colors[0] = 255; //red
-  colors[1] = 0;
-  colors[2] = ((temp-5)*25);
+    colors[0] = 255; //red
+    colors[1] = 0;
+    colors[2] = ((temp-5)*25);
   }
-  
+    
   if (temp >= 15 && temp <= 25) {
-  colors[0] = 255 - ((temp-15)*25);
-  colors[1] = 0;
-  colors[2] = 255; //blue
+    colors[0] = 255 - ((temp-15)*25);
+    colors[1] = 0;
+    colors[2] = 255; //blue
   }
-  
+    
   if (temp > 25) {
-  colors[0] = 0;
-  colors[1] = 0;
-  colors[2] = 255; //blue
+    colors[0] = 0;
+    colors[1] = 0;
+    colors[2] = 255; //blue
   } 
-  
+    
   for(int n=0;n<3;n++){ 
     //println(colors[n]);
     int num;
     num = colors[n]; // change string into Int
-    port.write((byte)(num)); // write as a byte over serial
+    arduino.analogWrite(RedPin, colors[0]); // write PWM to certain port
+    arduino.analogWrite(GreenPin, colors[1]); // write PWM to certain port
+    arduino.analogWrite(BluePin, colors[2]); // write PWM to certain port
   }
-
-/* Jop */
-
 }
-
-
-void mousePressed(){
-  
-}
-
