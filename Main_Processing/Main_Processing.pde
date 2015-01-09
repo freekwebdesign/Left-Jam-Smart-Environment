@@ -11,12 +11,23 @@ Arduino arduino;
 
 /* Weather information  */
 int temp;
+int oldtemp = 3;
+
+/* Amount of people */
+int people = 120;
+int oldpeople = 0;
+
+/* Manual Overwite */
+int manualoverwrite = 0;
 
 /* LED strip */
 int red, green, blue;
 int RedPin = 7; //Red pin 9 has a PWM
 int GreenPin = 8; //Green pin 10 has a PWM
 int BluePin = 9; //Blue pin 11 has a PWM
+
+/* Write data to XML */
+String[] php;
 
 void setup(){
 /* Initial setup files */
@@ -26,7 +37,7 @@ void setup(){
 
   /* Weather information */
   XML xml;
-   String url = "http://xml.buienradar.nl/";
+  String url = "http://xml.buienradar.nl/";
   
   xml = loadXML(url);
   XML firstChild = xml.getChild("weergegevens/actueel_weer/weerstations/weerstation/temperatuurGC");
@@ -38,13 +49,16 @@ void setup(){
   XML tekstChild = xml.getChild("weergegevens/verwachting_vandaag/tekst");
   String weer_info = tekstChild.getContent("");
   text(weer_info,10,40,1070,100);
-
+  
 }
 
 void draw(){
   /* Control LEDs in combination with temp */
   int[] colors = new int[3];
-    
+  
+  println(temp);
+  // temp IS NOT GETTING HERE YET! HOW TO DO?
+  
   if (temp < 5) {
     colors[0] = 255; //red
     colors[1] = 0;
@@ -77,4 +91,15 @@ void draw(){
     arduino.analogWrite(GreenPin, colors[1]); // write PWM to certain port
     arduino.analogWrite(BluePin, colors[2]); // write PWM to certain port
   }
+  
+  if (temp != oldtemp || people != oldpeople) {
+  php = loadStrings("http://boelders.nl/uni/left-jam/index.php?temperature=" + temp +"&people=" + people +"&manualoverwrite=" + manualoverwrite + "");
+  println("Temperaturen zijn niet hetzelfde of mensen zijn niet hetzelfde, dus XML schrijven!");
+  oldtemp = temp;
+  oldpeople = people;
+  }
+  
+  //println(temp);
+  //println(oldtemp);
+
 }
