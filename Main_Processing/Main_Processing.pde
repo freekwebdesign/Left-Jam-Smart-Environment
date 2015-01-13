@@ -11,7 +11,13 @@ Arduino arduino;
 
 /* Weather information  */
 int temp;
-int oldtemp = 3;
+int oldtemp = 0;
+float regen;
+float oldregen = 0.0;
+String icoon;
+String oldicoon = "";
+
+long time; //set up to use for millis
 
 /* Amount of people */
 int people = 120;
@@ -31,33 +37,15 @@ String[] php;
 
 void setup(){
 /* Initial setup files */
-  arduino = new Arduino(this, Arduino.list()[0], 57600);
+  //arduino = new Arduino(this, Arduino.list()[0], 57600); //disable if no Adruino connected
   frameRate(20);  // delay of 50 ms, 20Hz update
   size(1080,720);
-
-  /* Weather information */
-  XML xml;
-  String url = "http://xml.buienradar.nl/";
-  
-  xml = loadXML(url);
-  XML firstChild = xml.getChild("weergegevens/actueel_weer/weerstations/weerstation/temperatuurGC");
-  //println(firstChild.getIntContent());
-    
-  int temp = firstChild.getIntContent();
-  text(temp + " graden",10,20);
-    
-  XML tekstChild = xml.getChild("weergegevens/verwachting_vandaag/tekst");
-  String weer_info = tekstChild.getContent("");
-  text(weer_info,10,40,1070,100);
   
 }
 
 void draw(){
   /* Control LEDs in combination with temp */
   int[] colors = new int[3];
-  
-  println(temp);
-  // temp IS NOT GETTING HERE YET! HOW TO DO?
   
   if (temp < 5) {
     colors[0] = 255; //red
@@ -87,19 +75,51 @@ void draw(){
     //println(colors[n]);
     int num;
     num = colors[n]; // change string into Int
-    arduino.analogWrite(RedPin, colors[0]); // write PWM to certain port
-    arduino.analogWrite(GreenPin, colors[1]); // write PWM to certain port
-    arduino.analogWrite(BluePin, colors[2]); // write PWM to certain port
+    
+    //arduino.analogWrite(RedPin, colors[0]); // write PWM to certain port
+    //arduino.analogWrite(GreenPin, colors[1]); // write PWM to certain port
+    //arduino.analogWrite(BluePin, colors[2]); // write PWM to certain port
   }
   
-  if (temp != oldtemp || people != oldpeople) {
-  php = loadStrings("http://boelders.nl/uni/left-jam/index.php?temperature=" + temp +"&people=" + people +"&manualoverwrite=" + manualoverwrite + "");
+  /* Weather information */
+  if (millis()>time+5000) { //Run every 5 sec
+    time=millis();
+    println("Weerinfo ophalen van Buienradar");
+    XML xml;
+    String url = "http://xml.buienradar.nl/";
+  
+    xml = loadXML(url);
+    XML[] children = xml.getChildren("weergegevens/actueel_weer/weerstations/weerstation");
+  
+    for (int i = 0; i < children.length; i++) {
+      int id = children[i].getInt("id");
+      String name = children[i].getContent();
+      if (id == 6290) {
+      
+        XML[] tempchildren = xml.getChildren("weergegevens/actueel_weer/weerstations/weerstation/temperatuurGC");
+        temp = tempchildren[i].getIntContent();
+        //println(temp);
+        
+        XML[] icoonchildren = xml.getChildren("weergegevens/actueel_weer/weerstations/weerstation/icoonactueel");
+        icoon = icoonchildren[i].getContent();
+        //println(icoon);
+        //webImg = loadImage(icoon);
+        
+        XML[] regenchildren = xml.getChildren("weergegevens/actueel_weer/weerstations/weerstation/regenMMPU");
+        regen = regenchildren[i].getFloatContent();
+        //println(regen);
+      }
+    }
+    
+  }
+  
+if (temp != oldtemp || people != oldpeople || icoon != oldicoon || regen != oldregen) { //Check if some variables changed
+  php = loadStrings("http://boelders.nl/uni/left-jam/index.php?temperature=" + temp + "&people=" + people + "&manualoverwrite=" + manualoverwrite + "&icoon=" + icoon + "&regen=" + regen + "");
   println("Temperaturen zijn niet hetzelfde of mensen zijn niet hetzelfde, dus XML schrijven!");
   oldtemp = temp;
   oldpeople = people;
+  oldicoon = icoon;
+  oldregen = regen;
   }
-  
-  //println(temp);
-  //println(oldtemp);
 
 }
