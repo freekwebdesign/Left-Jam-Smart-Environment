@@ -23,6 +23,7 @@ long time; //set up to use for millis
 /* Amount of people */
 int people = 120;
 int oldpeople = 0;
+int busyFactor = 0;
 
 /* Manual Overwite */
 int manualoverwrite = 0;
@@ -32,9 +33,9 @@ int button = 0;
 
 /* LED strip */
 int red, green, blue;
-int RedPin = 7; //Red pin 9 has a PWM
-int GreenPin = 8; //Green pin 10 has a PWM
-int BluePin = 9; //Blue pin 11 has a PWM
+int RedPin = 9; //Red pin 9 has a PWM
+int GreenPin = 10; //Green pin 10 has a PWM
+int BluePin = 11; //Blue pin 11 has a PWM
 
 /* Write data to XML */
 String[] php;
@@ -42,17 +43,17 @@ String[] php;
 void setup(){
 /* Initial setup files */
   arduino = new Arduino(this, Arduino.list()[0], 57600); //disable if no Adruino connected
-  frameRate(20);  // delay of 50 ms, 20Hz update
+  frameRate(60);  // delay of 50 ms, 20Hz update
   size(1080,720);
   arduino.pinMode(2, Arduino.INPUT);
-  arduino.pinMode(8, Arduino.OUTPUT);
+  arduino.pinMode(4, Arduino.OUTPUT);
 }
 
 void draw(){
   float ppl = arduino.analogRead(0);
   float tmp = arduino.analogRead(1);
   int button = arduino.digitalRead(2);
-  
+  busyFactor = int(people/25.5);
   //enable manual overwrite by pressing button
   if (button == 1 && manualoverwrite == 0){
   manualoverwrite = 1;
@@ -65,11 +66,11 @@ void draw(){
   
   //changes temperature and amount of people manually
   if(manualoverwrite == 1){
-    arduino.digitalWrite(8, Arduino.HIGH);
-    if(ppl >800 && people<255){
+    arduino.digitalWrite(4, Arduino.HIGH);
+    if(ppl >800 && people>0){
     people--;
     }
-    else if(ppl < 200 && people>0){
+    else if(ppl < 200 && people<255){
     people++;
     }
     if(tmp >800){
@@ -84,7 +85,7 @@ void draw(){
     println("Temperature " + temp);
   }
   else if(manualoverwrite == 0){
-    arduino.digitalWrite(8, Arduino.LOW);
+    arduino.digitalWrite(4, Arduino.LOW);
     temp = ietemp;
   }
   /* Control LEDs in combination with temp */
@@ -92,27 +93,27 @@ void draw(){
   
   
   if (temp < 5) {
-    colors[0] = 255; //red
+    colors[0] = int(25.5*busyFactor); //red
     colors[1] = 0;
     colors[2] = 0;
   }
     
   if (temp >= 5 && temp <= 15) {
-    colors[0] = 255; //red
+    colors[0] = int(25.5*busyFactor); //red
     colors[1] = 0;
-    colors[2] = ((temp-5)*25);
+    colors[2] = int(((temp-5)*2.5)*busyFactor);
   }
     
   if (temp >= 15 && temp <= 25) {
-    colors[0] = 255 - ((temp-15)*25);
+    colors[0] = int((25.5 - ((temp-15)*2.5))*busyFactor);
     colors[1] = 0;
-    colors[2] = 255; //blue
+    colors[2] = int(25.5*busyFactor); //blue
   }
     
   if (temp > 25) {
     colors[0] = 0;
     colors[1] = 0;
-    colors[2] = 255; //blue
+    colors[2] = int(25.5*busyFactor); //blue
   } 
     
   for(int n=0;n<3;n++){ 
@@ -120,9 +121,9 @@ void draw(){
     int num;
     num = colors[n]; // change string into Int
     
-    //arduino.analogWrite(RedPin, colors[0]); // write PWM to certain port
-    //arduino.analogWrite(GreenPin, colors[1]); // write PWM to certain port
-    //arduino.analogWrite(BluePin, colors[2]); // write PWM to certain port
+    arduino.analogWrite(RedPin, colors[0]); // write PWM to certain port
+    arduino.analogWrite(GreenPin, colors[1]); // write PWM to certain port
+    arduino.analogWrite(BluePin, colors[2]); // write PWM to certain port
   }
   
   /* Weather information */
