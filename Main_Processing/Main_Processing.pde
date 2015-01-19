@@ -11,6 +11,7 @@ Arduino arduino;
 
 /* Weather information  */
 int temp;
+int ietemp;
 int oldtemp = 0;
 float regen;
 float oldregen = 0.0;
@@ -26,6 +27,9 @@ int oldpeople = 0;
 /* Manual Overwite */
 int manualoverwrite = 0;
 
+//Button
+int button = 0;
+
 /* LED strip */
 int red, green, blue;
 int RedPin = 7; //Red pin 9 has a PWM
@@ -37,15 +41,55 @@ String[] php;
 
 void setup(){
 /* Initial setup files */
-  //arduino = new Arduino(this, Arduino.list()[0], 57600); //disable if no Adruino connected
+  arduino = new Arduino(this, Arduino.list()[0], 57600); //disable if no Adruino connected
   frameRate(20);  // delay of 50 ms, 20Hz update
   size(1080,720);
-  
+  arduino.pinMode(2, Arduino.INPUT);
+  arduino.pinMode(8, Arduino.OUTPUT);
 }
 
 void draw(){
+  float ppl = arduino.analogRead(0);
+  float tmp = arduino.analogRead(1);
+  int button = arduino.digitalRead(2);
+  
+  //enable manual overwrite by pressing button
+  if (button == 1 && manualoverwrite == 0){
+  manualoverwrite = 1;
+  delay(200);
+  } 
+  else if(button == 1){
+  manualoverwrite = 0; 
+  delay(200);
+  }
+  
+  //changes temperature and amount of people manually
+  if(manualoverwrite == 1){
+    arduino.digitalWrite(8, Arduino.HIGH);
+    if(ppl >800 && people<255){
+    people--;
+    }
+    else if(ppl < 200 && people>0){
+    people++;
+    }
+    if(tmp >800){
+    temp++; 
+    delay(200);
+    }
+    else if(tmp < 200){
+    temp--;
+    delay(200);
+    }
+    println("People " + people);
+    println("Temperature " + temp);
+  }
+  else if(manualoverwrite == 0){
+    arduino.digitalWrite(8, Arduino.LOW);
+    temp = ietemp;
+  }
   /* Control LEDs in combination with temp */
   int[] colors = new int[3];
+  
   
   if (temp < 5) {
     colors[0] = 255; //red
@@ -95,9 +139,9 @@ void draw(){
       int id = children[i].getInt("id");
       String name = children[i].getContent();
       if (id == 6290) {
-      
+        
         XML[] tempchildren = xml.getChildren("weergegevens/actueel_weer/weerstations/weerstation/temperatuurGC");
-        temp = tempchildren[i].getIntContent();
+        ietemp = tempchildren[i].getIntContent();
         //println(temp);
         
         XML[] icoonchildren = xml.getChildren("weergegevens/actueel_weer/weerstations/weerstation/icoonactueel");
