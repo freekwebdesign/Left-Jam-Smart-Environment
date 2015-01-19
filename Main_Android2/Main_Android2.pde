@@ -3,27 +3,30 @@
 
 /* Initial setup files */
 /* Music */
-import android.media.*; //disable if you use Java
-import android.content.res.*; //disable if you use Java
-MediaPlayer snd; //disable if you use Java
+//import android.media.*; //disable if you use Java
+//import android.content.res.*; //disable if you use Java
+//MediaPlayer snd; //disable if you use Java
 
-PImage webImg;
+PImage webImg, nsImg, layoutImg;
 
 int people;
 int temp;
 float regen;
 String icoon;
 String musicurl;
+String mensen;
 int manualoverwrite;
 long time; //set up to use for millis
 
 void setup(){
   /* Initial setup files */
-  //size(600,600);
-  
+  size(1280,736);
+
   musicurl = "http://boelders.nl/uni/mp3/Rain.mp3";
   
-  //println(musicurl);
+  layoutImg = loadImage("http://boelders.nl/uni/left-jam/layout-tablet.png");
+  
+  /*println(musicurl);
   try { //disable if you use Java
   MediaPlayer snd = new MediaPlayer();
   snd.setDataSource(musicurl);
@@ -31,7 +34,7 @@ void setup(){
   snd.start();
   } catch (IOException e) {
           e.printStackTrace();
-  }
+  }*/
 }
 
 void draw(){
@@ -104,10 +107,19 @@ void draw(){
     
     
     /* Put information on screen */
-    text(temp + " graden",60,20);
-    text(regen + " mm",60,40);
-    image(webImg, 10, 5, 40, 40); //disabled because no image yet
-    text(weer_info,10,60,400,400);
+    mensen = "Er bevinden zich " + people + " mensen op het station op dit moment.";
+
+    image(layoutImg, 0, 0, 1280,736);
+    
+    textSize(26);
+    fill(#FFFFFF);
+    text(""+ temp + " degrees" + "   " + "      " + regen + " mm",60,395);
+    image(webImg, 40, 210, 150, 150);
+    //image(nsImg, 50, 300, 800/2, 323/2);
+    textSize(16);
+    fill(#000000);
+    text(weer_info,910,420,330,240);
+    text(mensen,920,240,300,20);
   }
   
 }
