@@ -27,7 +27,7 @@ void draw()
   println(people);
 
   if (people != oldpeople) { //Check if some variables changed
-    php = loadStrings("http://boelders.nl/uni/left-jam/index.php?people=" + people);
+    php = loadStrings("http://boelders.nl/uni/left-jam/people.php?people=" + people);
     //println("Temperaturen zijn niet hetzelfde of mensen zijn niet hetzelfde, dus XML schrijven!");
     oldpeople = people;
   }
