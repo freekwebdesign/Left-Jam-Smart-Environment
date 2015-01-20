@@ -8,20 +8,6 @@ import processing.serial.*;
 import cc.arduino.*;
 
 Arduino arduino;
-/* Sensor information */
-int echoPin1 = 7;
-int echoPin2 = 12;
-int trigPin1 = 6;
-int trigPin2 = 3;
-int PulseLedPin = 8;
-
-int echoValue1;
-int lastValue1;
-int echoValue2;
-int lastValue2;
-
-long PulseGenerated;
-long Pulse;
 
 /* Weather information  */
 int temp;
@@ -62,9 +48,7 @@ void setup() {
   size(1080, 720);
   arduino.pinMode(2, Arduino.INPUT);
   arduino.pinMode(4, Arduino.OUTPUT);
-  arduino.pinMode(6, Arduino.OUTPUT);
-  arduino.pinMode(7, Arduino.INPUT);
-  arduino.pinMode(8, Arduino.OUTPUT);
+
 }
 
 void draw() {
@@ -141,32 +125,7 @@ void draw() {
     arduino.analogWrite(BluePin, colors[2]); // write PWM to certain port
   }
   /* People counter at gates */
-  arduino.digitalWrite(trigPin1, arduino.HIGH);
-  arduino.digitalWrite(trigPin2, arduino.HIGH);
-  delay(1);
-  arduino.digitalWrite(trigPin1, arduino.LOW);
-  arduino.digitalWrite(trigPin2, arduino.LOW);
-
-  echoValue1 = arduino.digitalRead(echoPin1);
-  echoValue2 = arduino.digitalRead(echoPin2);
-
-  if ( echoValue1 == arduino.LOW /*&& lastValue1 != arduino.LOW*/) {
-    //lastValue1 = echoValue1;
-    if (  echoValue2 == arduino.LOW /*&& lastValue2 != arduino.LOW*/) {
-      //lastValue2 = echoValue2;
-      println("IN");
-    }
-  }
-  if (  echoValue2 == arduino.LOW /*&& lastValue2 != arduino.LOW*/) {
-    //lastValue2 = echoValue2;
-    if ( echoValue1 == arduino.LOW /*&& lastValue1 != arduino.LOW*/) {
-      //lastValue1 = echoValue1;
-      println("OUT");
-    }
-  }
-
-  println("a " + echoValue1);
-  println("b " + echoValue1);
+  
 
   /* Weather information */
   if (millis()>time+5000) { //Run every 5 sec
