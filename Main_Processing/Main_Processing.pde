@@ -154,12 +154,22 @@ void draw() {
         XML[] regenchildren = xml.getChildren("weergegevens/actueel_weer/weerstations/weerstation/regenMMPU");
         regen = regenchildren[i].getFloatContent();
         //println(regen);
+        
+        /* Get amount of people */
+        String url1 = "http://boelders.nl/uni/left-jam/people.xml";
+        xml = loadXML(url1);
+    
+        XML[] peoplechildren = xml.getChildren("values/people");
+        sensePeople = peoplechildren[0].getIntContent();
+        println(sensePeople);
       }
     }
   }
 
-  if (temp != oldtemp || people != oldpeople || icoon != oldicoon || regen != oldregen) { //Check if some variables changed
-    php = loadStrings("http://boelders.nl/uni/left-jam/index.php?temperature=" + temp + "&people=" + people + "&manualoverwrite=" + manualoverwrite + "&icoon=" + icoon + "&regen=" + regen + "");
+  println(sensePeople);
+
+  if (temp != oldtemp || icoon != oldicoon || regen != oldregen) { //Check if some variables changed
+    php = loadStrings("http://boelders.nl/uni/left-jam/index.php?temperature=" + temp + "&manualoverwrite=" + manualoverwrite + "&icoon=" + icoon + "&regen=" + regen + "");
     //println("Temperaturen zijn niet hetzelfde of mensen zijn niet hetzelfde, dus XML schrijven!");
     oldtemp = temp;
     oldpeople = people;
