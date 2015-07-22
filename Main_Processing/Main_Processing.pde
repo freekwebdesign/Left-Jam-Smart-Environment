@@ -93,26 +93,26 @@ void draw() {
 
   if (temp < 5) {
     colors[0] = int(2.55*busyFactor); //red
-    colors[1] = 0;
     colors[2] = 0;
+    colors[1] = 0;
   }
 
   if (temp >= 5 && temp <= 15) {
     colors[0] = int(2.55*busyFactor); //red
-    colors[1] = 0;
-    colors[2] = int(((temp-5)*0.25)*busyFactor);
+    colors[2] = 0;
+    colors[1] = int(((temp-5)*0.25)*busyFactor);
   }
 
   if (temp >= 15 && temp <= 25) {
     colors[0] = int((2.55 - ((temp-15)*0.25))*busyFactor);
-    colors[1] = 0;
-    colors[2] = int(2.55*busyFactor); //blue
+    colors[2] = 0;
+    colors[1] = int(2.55*busyFactor); //blue
   }
 
   if (temp > 25) {
     colors[0] = 0;
-    colors[1] = 0;
-    colors[2] = int(2.55*busyFactor); //blue
+    colors[2] = 0;
+    colors[1] = int(2.55*busyFactor); //blue
   } 
 
   for (int n=0; n<3; n++) { 
@@ -166,10 +166,11 @@ void draw() {
     }
   }
 
-  println(sensePeople);
+  println("p" + people);
+  println("t" + temp);
 
   if (temp != oldtemp || icoon != oldicoon || regen != oldregen) { //Check if some variables changed
-    php = loadStrings("http://boelders.nl/uni/left-jam/index.php?temperature=" + temp + "&manualoverwrite=" + manualoverwrite + "&icoon=" + icoon + "&regen=" + regen + "");
+    php = loadStrings("http://boelders.nl/uni/left-jam/index.php?temperature=" + temp + "&people=" + people + "&manualoverwrite=" + manualoverwrite + "&icoon=" + icoon + "&regen=" + regen + "");
     //println("Temperaturen zijn niet hetzelfde of mensen zijn niet hetzelfde, dus XML schrijven!");
     oldtemp = temp;
     oldpeople = people;
